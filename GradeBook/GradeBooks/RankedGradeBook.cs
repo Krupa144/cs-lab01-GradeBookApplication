@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices.Marshalling;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,35 +22,44 @@ namespace GradeBook.GradeBooks
             {
                 throw new InvalidOperationException("Assessment requires 5 students");
             }
+            
+            var grades = new List<double>();
+            foreach (var student in Students) 
+            {
+                grades.Add(student.AverageGrade);
+            }
+            grades= grades.OrderDescending().ToList();
+            for(int i=0; i < grades.Count; i++)
+            {
+                if (grades[i] <= averageGrade)
+                {
+                   switch (i)
+                    {
+                        case 0:
+                            return 'A';
+                        case 1:
+                            return 'B';
+                        case 2:
+                            return 'C';
+                        case 3:
+                            return 'D';
+                        case 4:
+                            return 'F';
+                    }
+                }
+            }
+            return 'F';
+        }
 
-            int rank = 1;
-            foreach (var student in Students)
+        public override void CalculateStatistics()
+        {
+            if(Students.Count < 5)
             {
-                if (student.AverageGrade > averageGrade)
-                    rank++;
+                Console.WriteLine("Ranked grading requires at least 5 students.");
             }
-
-            var percent = (double)rank / Students.Count;
-
-            if (percent >= 0.8)
+            else if(Students.Count >= 5)
             {
-                return 'A';
-            }
-            else if (percent >= 0.6)
-            {
-                return 'B';
-            }
-            else if (percent >= 0.4)
-            {
-                return 'C';
-            }
-            else if (percent >= 0.2)
-            {
-                return 'D';
-            }
-            else
-            {
-                return 'F';
+                Console.WriteLine();
             }
         }
     }
