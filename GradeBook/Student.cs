@@ -12,6 +12,8 @@ namespace GradeBook
         public string Name { get; set; }
         public StudentType Type { get; set; }
         public EnrollmentType Enrollment { get; set; }
+
+        public Type GradebookType { get; set; }
         public List<double> Grades { get; set; }
         [JsonIgnore]
         public double AverageGrade
