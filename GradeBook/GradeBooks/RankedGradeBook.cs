@@ -16,40 +16,44 @@ namespace GradeBook.GradeBooks
             Type = Enums.GradeBookType.Ranked;
         }
 
-        public override char GetLetterGrade(double averageGrade)
+        
+            public override char GetLetterGrade(double averageGrade)
         {
             if (Students.Count < 5)
             {
-                throw new InvalidOperationException("Assessment requires 5 students");
+                throw new InvalidOperationException("Ranked grading requires at least 5 students.");
             }
-            
+
             var grades = new List<double>();
-            foreach (var student in Students) 
+            foreach (var student in Students)
             {
                 grades.Add(student.AverageGrade);
             }
-            grades= grades.OrderDescending().ToList();
-            for(int i=0; i < grades.Count; i++)
+            grades = grades.OrderByDescending(g => g).ToList();
+            int x = (int)Math.Ceiling(Students.Count * 0.2);
+
+            if (averageGrade >= grades[x - 1])
             {
-                if (grades[i] <= averageGrade)
-                {
-                   switch (i)
-                    {
-                        case 0:
-                            return 'A';
-                        case 1:
-                            return 'B';
-                        case 2:
-                            return 'C';
-                        case 3:
-                            return 'D';
-                        case 4:
-                            return 'F';
-                    }
-                }
+                return 'A';
             }
-            return 'F';
+            else if (averageGrade >= grades[(x * 2) - 1])
+            {
+                return 'B';
+            }
+            else if (averageGrade >= grades[(x * 3) - 1])
+            {
+                return 'C';
+            }
+            else if (averageGrade >= grades[(x * 4) - 1])
+            {
+                return 'D';
+            }
+            else
+            {
+                return 'F';
+            }
         }
+
 
         public override void CalculateStatistics()
         {
